@@ -1,0 +1,15 @@
+.FooterController {
+	background-color: gray;
+	height:           55px;
+}
+
+#current-year {
+	display: inline-block;
+}
+
+#content {
+	position: absolute;
+    top:      16px;
+    left:     10px;
+    color:    white;
+}

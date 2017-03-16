@@ -1,0 +1,26 @@
+html, body {
+	height: 100%;
+}
+
+#header-container {
+	position: fixed;
+    top:      0;
+    width:    100%;
+    z-index:  2;
+}
+
+#footer-container {
+	position: fixed;
+	bottom:   0;
+	width:    100%;
+}
+
+#main-container {
+	padding-top: 55px;
+    height:      calc(100% - 55px);
+}
+
+.horizontal-divider {
+	border:     1px solid darkgray;
+    margin-top: 5px;
+}

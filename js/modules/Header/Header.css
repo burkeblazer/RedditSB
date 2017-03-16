@@ -1,0 +1,62 @@
+.HeaderController {
+	background-color: gray;
+	height:           55px;
+}
+
+#signinbutton {
+	display: inline-block;
+}
+
+#signoutbutton {
+	display:     none;
+	margin-left: 5px;
+}
+
+#header-label {
+    width:       200px;
+    color:       white;
+    margin-left: 10px;
+    margin-top:  5px;
+}
+
+#header-signin-dialog-html {
+	display: none;
+}
+
+.header-right {
+	position: absolute;
+    right:    10px;
+    top:      7px;
+}
+
+#welcome-message {
+	font-size:  15px;
+	display:    none;
+	color:      white;
+    margin-top: 8px;
+}
+
+#header-navbar {
+	display: none;
+}
+
+.HeaderController .nav a {
+	color:       skyblue;
+    font-size:   14px;
+    font-weight: 700;
+    text-shadow: none;
+}
+
+.HeaderController .nav {
+	margin-left: 10%;
+}
+
+.HeaderController .nav .active a {
+	color: black;
+}
+
+.HeaderController .nav .active {
+	background-color: lightgrey;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}

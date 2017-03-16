@@ -1,0 +1,84 @@
+.dialog-footer {
+    position:         absolute;
+    bottom:           5px;
+    right:            5px;
+    width:            calc(100% - 10px);
+    background-color: lightgray;
+    border-radius:    5px;
+    height:           45px;
+    z-index:          2;
+}
+
+#save-button {
+	margin-top: 6px;
+    position:   absolute;
+    right:      10px;
+}
+
+#delete-button {
+	margin-top: 6px;
+    position:   absolute;
+    right:      75px;
+    display:    none;
+}
+
+#cancel-button {
+	margin-top: 6px;
+    position:   absolute;
+    left:       10px;
+}
+
+#add-bet-button {
+	margin-bottom: 5px;
+}
+
+#bet-table {
+	margin-bottom: 70px;
+}
+
+.amount-win, .odds {
+	width: 45px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.match-up-one {
+	margin-right: 5px;
+	width:        95px;
+	display:      inline-block;
+}
+
+.match-up-two {
+	margin-left: 5px;
+	width:       95px;
+	display:     inline-block;
+}
+
+.outcome {
+	width: 95px;
+}
+
+.pick {
+	width: 95px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.sports-select {
+	height: 26px;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+#remove-bet {
+	margin-left: 30px;
+    margin-top:  7px;
+}
+
+.amount-bet {
+	width: 45px;
+}
+
+.matchup-row-margin {
+	margin-top: 10px;
+}

@@ -1,0 +1,25 @@
+<div class="Dashboard DashboardController">
+	<link rel="stylesheet" href="js/modules/Dashboard/Dashboard.css">
+
+	<div class="btn-group">
+		<button id="dashboard-dropdown-button" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<div id="dashboard-dropdown-text">Daily</div><span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">
+			<li><a>Daily</a></li>
+			<li><a>Monthly</a></li>
+			<li><a>Yearly</a></li>
+		</ul>
+	</div>
+
+	<div id="daily-date-select-container">
+		<div id="dashboard-start-date-label">Start date:</div><input id="dashboard-start-date" type="datepicker"/>
+		<div id="dashboard-end-date-label"  >End date:  </div><input id="dashboard-end-date"   type="datepicker"/>
+	</div>
+
+	<div id="dashboard-daily-chart-container" style="position: relative; height: 50vh">
+	    <canvas id="dashboard-daily-chart"></canvas>
+	</div>
+	
+   <script src="js/modules/Dashboard/DashboardController.js"></script>
+</div>

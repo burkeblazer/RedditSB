@@ -1,0 +1,23 @@
+.UserDetails .nav a {
+	color:       skyblue;
+    font-size:   14px;
+    font-weight: 700;
+    text-shadow: none;
+}
+
+.UserDetails .nav .active a {
+	color: black;
+}
+
+.UserDetails .nav .active {
+	background-color: lightgrey;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.UserDetails #user-details-navbar {
+	background-color: gray;
+	height:           55px;
+	width:            100%;
+	padding-left:     10px;
+}

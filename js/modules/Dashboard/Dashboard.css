@@ -1,0 +1,35 @@
+.Dashboard {
+	padding: 15px;
+}
+
+#dashboard-dropdown-text {
+	display:      inline-block;
+	margin-right: 10px;
+}
+
+#daily-date-select-container {
+	display: inline-block;
+}
+
+#dashboard-start-date-label {
+	display:      inline-block;
+    font-weight:  bolder;
+    margin-right: 10px;
+}
+
+#dashboard-end-date-label {
+	display:      inline-block;
+    font-weight:  bolder;
+    margin-right: 10px;
+    margin-left:  20px;
+}
+
+#dashboard-dropdown-button {
+	margin-right: 10px;
+	width:        100px;
+}
+
+#dashboard-start-date, #dashboard-end-date {
+	height: 32px  !important;
+    width:  100px !important;
+}

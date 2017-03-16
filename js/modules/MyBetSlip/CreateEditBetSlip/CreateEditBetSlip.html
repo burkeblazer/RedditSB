@@ -1,0 +1,52 @@
+<div class="CreateEditBetSlip CreateEditBetSlipController">
+	<link rel="stylesheet" href="js/modules/MyBetSlip/CreateEditBetSlip/CreateEditBetSlip.css">
+
+	<form>
+		<div class="form-group">
+			<label for="name">Name</label>
+			<input type="text" class="form-control" id="name" aria-describedby="nameHelp" placeholder="Enter name i.e. NBA or Hockey">
+			<small id="nameHelp" class="form-text text-muted">Choose a name for your bet slip so you can keep track of them more easily.</small>
+		</div>
+		<div class="form-check">
+			<label class="form-check-label">
+				<input id="public" aria-describedby="publicHelp" type="checkbox" class="form-check-input" checked>
+				Public
+			</label>
+			<small id="publicHelp" class="form-text text-muted">By default all bet slips will be public, uncheck if you do not want this to be public</small>
+		</div>
+		<div class="form-group">
+			<label for="notes">Notes</label>
+			<textarea class="form-control" id="notes" rows="3"></textarea>
+		</div>
+	</form>
+
+	<button id="add-bet-button" class="btn btn-success">Add Bet</button>
+
+	<div id="money-to-units-container" class="pull-right" style="width: 50%;">
+		<div style="display:inline-block;font-weight: bold;">Dollar amount per unit:</div>
+		<input type="decimal" style="width: 75px;" id="money-to-unit-input"/>
+		<div style="display: inline-block;font-weight: bold;font-size: 10px;">**We do not save any dollar amounts in the system**, but they are stored in local storage in your browser's cookies. Please input a dollar to unit conversion and use dollar amounts in each bet below. The system will automatically convert your dollar amounts to units and store the unit values in the database.</div>
+	</div>
+
+	<table id="bet-table" class="table table-inverse table-hover table-bordered">
+		<thead>
+			<tr>
+				<th>Match Up</th>
+				<th>Amount Bet</th>
+				<th>Amount to Win</th>
+				<th>Outcome</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+
+	<div class="dialog-footer">
+		<button id="cancel-button" class="btn btn-info"   >Cancel</button>
+		<button id="delete-button" class="btn btn-danger" >Delete</button>
+		<button id="save-button"   class="btn btn-success">Save  </button>
+	</div>
+	
+   <script src="js/modules/MyBetSlip/CreateEditBetSlip/CreateEditBetSlipController.js"></script>
+</div>

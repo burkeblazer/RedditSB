@@ -1,0 +1,44 @@
+.MyBetSlip {
+	padding: 15px;
+}
+
+#datepicker {
+	display: none;
+}
+
+#date-container {
+	display: inline-block;
+}
+
+#previous-date {
+	display: inline-block;
+}
+
+#next-date {
+	display: inline-block;
+}
+
+#current-date {
+	text-align:   center;
+	width:        125px;
+	display:      inline-block;
+    margin-right: 10px;
+    margin-left:  10px;
+    font-size:    20px;
+}
+
+#create-new {
+	margin-left: 5px;
+}
+
+#create-new-bet-slip-html {
+	display: none;
+}
+
+#bet-slip-table {
+	margin-top: 5px;
+}
+
+#create-new-bet-slip {
+	position: initial !important;
+}
