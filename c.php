@@ -12,7 +12,7 @@ $user_id = $_SESSION['user_id'];
 
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
-register_shutdown_function(array("Gateway", "fatalErrorHandler"));
+// register_shutdown_function(array("Gateway", "fatalErrorHandler"));
 
 $overrides = array();
 

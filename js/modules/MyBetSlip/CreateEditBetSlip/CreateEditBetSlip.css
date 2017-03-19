@@ -30,6 +30,7 @@
 
 #add-bet-button {
 	margin-bottom: 5px;
+	margin-top: 31px;
 }
 
 #bet-table {
@@ -81,4 +82,47 @@
 
 .matchup-row-margin {
 	margin-top: 10px;
+}
+
+#tag-search {
+	width:   125px;
+    display: inline-block;
+}
+
+.tag-item-container {
+	display: inline-block;
+	margin-right: 5px;
+}
+
+.tag-item-text {
+	display: inline-block;
+    background-color: gray;
+    padding: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    color: white;
+    border: 1px black solid;
+}
+
+.tag-item-delete {
+	display: inline-block;
+    padding: 5px;
+    background-color: red;
+    font-weight: bolder;
+    color: white;
+    border: 1px solid black;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+#tags-container {
+	margin-top: -10px;
+    margin-bottom: 10px
+}
+
+.bet-notes {
+	display: inline-block;
+    margin-top: 5px;
+    width: 439px;
+    margin-left: 5px;
 }

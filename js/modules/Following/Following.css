@@ -1,3 +1,23 @@
 .Following {
 	padding: 15px;
 }
+
+.Following .following-star {
+	background-image:  url('/RedditSB/img/following-star.png');
+	background-size:   20px;
+    background-repeat: no-repeat;
+    height:            20px;
+    cursor:            pointer;
+}
+
+.Following .not-following-star {
+	background-image:  url('/RedditSB/img/not-following-star.png');
+	background-size:   20px;
+    background-repeat: no-repeat;
+    height:            20px;
+    cursor:            pointer;
+}
+
+#add-reddit-user-text {
+    margin-bottom: 5px;
+}

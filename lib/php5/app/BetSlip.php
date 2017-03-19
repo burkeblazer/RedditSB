@@ -12,7 +12,9 @@ class BetSlip {
 	 *
 	 * @extern true
 	 */
-	public static function getByDate($date, $suppress_message = false) {
+	public static function getByDate($date, $suppress_message = false, $user_id = null) {
+		if (!$user_id) {$user_id = User::$current['user_id'];}
+
 		// Get all bet slips for date
 		$bet_slips = Utility::pgQueryParams("
 			SELECT
@@ -25,7 +27,7 @@ class BetSlip {
 				 bs.user_id = $1 AND bs.slip_date = $2
 
 			ORDER BY bs.modified DESC;
-		", array(User::$current['user_id'], $date));
+		", array($user_id, $date));
 
 		// Get all bets for each bet slip
 		foreach ($bet_slips as &$bet_slip) {
@@ -48,7 +50,9 @@ class BetSlip {
 	 *
 	 * @extern true
 	 */
-	public static function getAll($public_only = false, $suppress_message =  false) {
+	public static function getAll($public_only = false, $suppress_message =  false, $user_id = null) {
+		if (!$user_id) {$user_id = User::$current['user_id'];}
+
 		// Get all bet slips for date
 		$bet_slips = Utility::pgQueryParams("
 			SELECT
@@ -61,7 +65,7 @@ class BetSlip {
 				 bs.user_id = $1
 
 			ORDER BY bs.modified DESC;
-		", array(User::$current['user_id']));
+		", array($user_id));
 
 		// Get all bets for each bet slip
 		foreach ($bet_slips as &$bet_slip) {
@@ -129,15 +133,9 @@ class BetSlip {
 		// If one previously exists, delete it
 		if ($bet_slip_id) {BetSlip::delete($bet_slip_id);}
 
-		// See if one already exists with this name or not
-		list($duplicate_bet_slip_id) = Heresy::selectOne('bet_slip_id', 'bet_slip', array('name' => $data['name'], 'slip_date' => $date), true);
-		$update                      = ($bet_slip_id);
-
-		// Check duplicate
-		if ($duplicate_bet_slip_id)                 {return Utility::successFalse(null, 'There was a duplicate bet slip entry found in the db for today, please choose a different name for the bet slip.');}
-
 		// Insert the bet slip with the new information
-		$bets = $data['bets'];
+		$update            = ($bet_slip_id);
+		$bets              = $data['bets'];
 		unset($data['bets']);
 		$data['slip_date'] = $date;
 		$data['public']    = ($data['public']) ? 1 : 0;
@@ -159,7 +157,7 @@ class BetSlip {
 		if (!$user_id) {$user_id = User::$current['user_id'];}
 		$total_bets              = 0;
 		if (!$bet_slips) {
-			$bet_slips           = BetSlip::getAll(true, true);
+			$bet_slips           = BetSlip::getAll(true, true, $user_id);
 		}
 		foreach ($bet_slips as $public_bet) {
 			$total_bets += count($public_bet['bets']);
@@ -179,7 +177,7 @@ class BetSlip {
 		if (!$user_id) {$user_id = User::$current['user_id'];}
 		$total_units             = 0;
 		if (!$bet_slips) {
-			$bet_slips           = BetSlip::getAll(true, true);
+			$bet_slips           = BetSlip::getAll(true, true, $user_id);
 		}
 		foreach ($bet_slips as $public_bet) {
 			foreach ($public_bet['bets'] as $bet) {
@@ -203,7 +201,7 @@ class BetSlip {
 		$total_wins              = 0;
 		$percent                 = 0;
 		if (!$bet_slips) {
-			$bet_slips           = BetSlip::getAll(true, true);
+			$bet_slips           = BetSlip::getAll(true, true, $user_id);
 		}
 		foreach ($bet_slips as $public_bet) {
 			foreach ($public_bet['bets'] as $bet) {
@@ -231,7 +229,7 @@ class BetSlip {
 		if (!$user_id) {$user_id = User::$current['user_id'];}
 		$total_units             = 0;
 		if (!$bet_slips) {
-			$bet_slips           = BetSlip::getAll(true, true);
+			$bet_slips           = BetSlip::getAll(true, true, $user_id);
 		}
 
 		foreach ($bet_slips as $public_bet) {

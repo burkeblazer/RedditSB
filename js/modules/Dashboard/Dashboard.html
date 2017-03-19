@@ -1,24 +1,88 @@
 <div class="Dashboard DashboardController">
 	<link rel="stylesheet" href="js/modules/Dashboard/Dashboard.css">
 
-	<div class="btn-group">
-		<button id="dashboard-dropdown-button" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			<div id="dashboard-dropdown-text">Daily</div><span class="caret"></span>
-		</button>
-		<ul class="dropdown-menu">
-			<li><a>Daily</a></li>
-			<li><a>Monthly</a></li>
-			<li><a>Yearly</a></li>
-		</ul>
+	<div id="dashboard-newsfeed"/>
+
+	<div id="dashboard-newsfeed-item-container" style="display: none;">
+		<div class="newsfeed-item">
+			<div class="newsfeed-item-header">
+				<div class="newsfeed-item-header-name-container">
+					<div class="newsfeed-item-header-name"/>
+					<div class="newsfeed-item-header-date"/>
+				</div>
+
+				<div class="newsfeed-item-header-title"/>
+			</div>
+
+			<div class="newsfeed-item-body-container">
+				<div class="newsfeed-data-record-container">
+					Record matching these tags:
+					<div class="newsfeed-data-record"/>
+				</div>
+			</div>
+
+			<div class="newsfeed-item-divider"/>
+
+			<div class="newsfeed-item-footer-container">
+				<div class="newsfeed-item-footer-like">
+					<button class="newsfeed-item-footer-like-button btn btn-default" type="button">
+						Like   <span class="badge">0</span>
+					</button>
+				</div>
+				<div class="newsfeed-item-footer-comment">
+					<button class="newsfeed-item-footer-comments-button  btn btn-default" type="button">
+						Comments   <span class="badge">0</span>
+					</button>
+				</div>
+				<div class="newsfeed-item-footer-refresh">
+					<button class="newsfeed-item-footer-refresh-button  btn btn-default" type="button">
+						<span class="newsfeed-item-footer-refresh-button glyphicon glyphicon-refresh" aria-hidden="true"></span>
+					</button>
+				</div>
+			</div>
+
+			<div class="newsfeed-item-comments-container">
+				<div class="newsfeed-item-divider"/>
+
+				<div class="newsfeed-item-comments-div"/>
+
+				<div class="input-group">
+					<input class="form-control newsfeed-item-comments-input" type="text" placeholder="Post comment...">
+					<span class="input-group-btn">
+						<button class="newsfeed-item-comments-button btn btn-default" type="button">Post</button>
+					</span>
+			    </div>
+			</div>
+		</div>
 	</div>
 
-	<div id="daily-date-select-container">
-		<div id="dashboard-start-date-label">Start date:</div><input id="dashboard-start-date" type="datepicker"/>
-		<div id="dashboard-end-date-label"  >End date:  </div><input id="dashboard-end-date"   type="datepicker"/>
+	<div id="dashboard-newsfeed-comment-container" style="display: none;">
+		<div class="newsfeed-comment">
+			<div class="newsfeed-comment-name-container">
+				<div class="newsfeed-comment-name"/>
+				<div class="newsfeed-comment-date"/>
+			</div>
+
+			<div class="newsfeed-comment-text"/>
+
+			<a class="newsfeed-comment-delete" style="display: none;">Delete</a>
+		</div>
 	</div>
 
-	<div id="dashboard-daily-chart-container" style="position: relative; height: 50vh">
-	    <canvas id="dashboard-daily-chart"></canvas>
+	<div id="dashboard-newsfeed-data-container" style="display: none;">
+		<div class="newsfeed-data">
+			<div class="newsfeed-data-bet-matches">
+			</div>
+		</div>
+	</div>
+
+	<div id="dashboard-newsfeed-matches-container" style="display: none;">
+		<div class="newsfeed-data-match">
+			<div class="newsfeed-data-match-sport"/>
+			<div class="newsfeed-data-match-matchup"/>
+			<div class="newsfeed-data-match-pick"/>
+			<div class="newsfeed-data-match-odds"/>
+		</div>
 	</div>
 	
    <script src="js/modules/Dashboard/DashboardController.js"></script>

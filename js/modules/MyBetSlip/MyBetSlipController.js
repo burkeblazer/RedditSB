@@ -41,7 +41,14 @@ $.Controller('MyBetSlip', {pluginName: 'MyBetSlipController'}, {
 
 		var windowHeight = $(window).height();
 		var windowWidth  = $(window).width();
-		var dialogWidth  = (windowHeight <= 1200) ? 1050 : 1200;
+		var dialogWidth  = 1400;
+		if (windowWidth <= 1068) {
+			dialogWidth  = 1000;
+		}
+		else if (windowWidth <= 1280) {
+			dialogWidth = 1200;
+		}
+		
 		var dialogHeight = (windowHeight <= 800)  ? 650  : 800;
 
 		// Center dialog
@@ -115,6 +122,17 @@ $.Controller('MyBetSlip', {pluginName: 'MyBetSlipController'}, {
 		}
 	},
 
+	getTagsHTML: function(tagsJSON) {
+		if (!tagsJSON || tagsJSON == '[]') {return '';}
+		var $tagContainer = $('<div style="display:inline-block">');
+		var tags          = $.parseJSON(tagsJSON);
+		for (var ct = 0; ct < tags.length; ct++) {
+			$tagContainer.append($('<div style="display:inline-block">').append($('<div>').text(tags[ct]).addClass('bet-slip-tag-item-text')));
+		}
+
+		return $tagContainer;
+	},
+
 	loadTable: function(data) {
 		var $table          = $('#bet-slip-table');
 
@@ -125,7 +143,7 @@ $.Controller('MyBetSlip', {pluginName: 'MyBetSlipController'}, {
 			var $row       = $('<tr>');
 			var totalUnits = self.getTotalUnits(betSlip.bets);
 			var plusMinus  = self.getPlusMinus(betSlip.bets);
-			$row.append($('<td>').append(betSlip.name));
+			$row.append($('<td>').append(self.getTagsHTML(betSlip.tags)));
 			$row.append($('<td>').append((betSlip.public === 't') ? 'YES' : 'NO'));
 			$row.append($('<td>').append(betSlip.bets.length));
 			$row.append($('<td>').append(totalUnits));

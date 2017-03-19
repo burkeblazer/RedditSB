@@ -18,6 +18,17 @@ $.Controller('CreateEditBetSlip', {pluginName: 'CreateEditBetSlipController'}, {
 				self.loadData(self.options.betSlip);
 			}
 		});
+
+		this.currentTags = [];
+		Utility.DataSource.getTags(function(data) {
+			self.tags = data;
+
+			$("#tag-search", this.$el).typeahead({source: self.tags, afterSelect: $.proxy(self.onTagSelected, self)});
+
+			if (self.options.betSlip) {
+				self.loadTags(self.options.betSlip.tags);
+			}
+		});
 	},
 
 	initEvents: function() {
@@ -26,10 +37,45 @@ $.Controller('CreateEditBetSlip', {pluginName: 'CreateEditBetSlipController'}, {
 		this.$el.on('click', '#delete-button',       $.proxy(this.onDeleteButtonClick, this));
 		this.$el.on('click', '.outcome-btn',         $.proxy(this.toggleOutComeButton, this));
 		this.$el.on('keyup', '#money-to-unit-input', $.proxy(this.updateAmounts,       this));
+		this.$el.on('click', '.tag-item-delete',     $.proxy(this.onTagDeleted,        this));
+	},
+
+	loadTags: function(tagsJSON) {
+		if (!tagsJSON) {return;}
+
+		var tags = $.parseJSON(tagsJSON);
+		for (var ct = 0; ct < tags.length; ct++) {
+			this.onTagSelected(tags[ct]);
+		}
+	},
+
+	onTagDeleted: function(evt) {
+		var $button = $(evt.target);
+		var tagName = $button.parent().find('.tag-item-text').text();
+		for (var ct = 0; ct < this.currentTags.length; ct++) {
+			if (this.currentTags[ct] == tagName) {this.currentTags.splice(ct, 1);}
+		}
+		$button.parent().remove();
+	},
+
+	onTagSelected: function(tag) {
+		// See if this tag exists yet
+		var bFound = false;
+		for (var ct = 0; ct < this.currentTags.length; ct++) {
+			if (this.currentTags[ct] == tag) {bFound = true;}
+		}
+
+		// If it's already there, just clear the field and return
+		if (bFound) {$("#tag-search", this.$el).val('');return;}
+
+		// Else add it and make a tag entry
+		this.currentTags.push(tag);
+		$('#tags-container', this.$el).append($('<div>').addClass('tag-item-container').append($('<div>').text(tag).addClass('tag-item-text'),$('<div>').text('x').addClass('tag-item-delete')));
+		$("#tag-search", this.$el).val('');
 	},
 
 	updateAmounts: function() {
-		var conversion                                = $('#money-to-unit-input').val();
+		var conversion                                = $('#money-to-unit-input', this.$el).val();
 		window.localStorage.reddit_sb_unit_conversion = conversion;
 		var dollars                                   = this.$el.find('.amount-bet,.amount-win');
 		for (var ct  = 0; ct < dollars.length; ct++) {
@@ -60,7 +106,7 @@ $.Controller('CreateEditBetSlip', {pluginName: 'CreateEditBetSlipController'}, {
 		if (!unitsConversion) {return;}
 
 		// Go ahead and input it
-		$('#money-to-unit-input').val(unitsConversion);
+		$('#money-to-unit-input', this.$el).val(unitsConversion);
 	},
 
 	toggleOutComeButton: function(evt) {
@@ -71,11 +117,16 @@ $.Controller('CreateEditBetSlip', {pluginName: 'CreateEditBetSlipController'}, {
 	},
 
 	onDeleteButtonClick: function() {
-		Utility.Ajax.request({
-			mode:        'BetSlip::delete',
-			bet_slip_id: this.options.betSlip.bet_slip_id,
-			callback:    $.proxy(onDeleteBetSlipSuccess, this)
-		});
+		Utility.confirm("Are you sure you want to delete this Bet Slip?").then($.proxy(continueDelete, this));
+		
+		function continueDelete(yesno) {
+			if (yesno != 'yes') {return;}
+			Utility.Ajax.request({
+				mode:        'BetSlip::delete',
+				bet_slip_id: this.options.betSlip.bet_slip_id,
+				callback:    $.proxy(onDeleteBetSlipSuccess, this)
+			});
+		}
 
 		function onDeleteBetSlipSuccess(result) {
 			if (!result.success) {$.notify({message: result.msg},{type: 'danger'});return;}
@@ -96,7 +147,6 @@ $.Controller('CreateEditBetSlip', {pluginName: 'CreateEditBetSlipController'}, {
 			self.$el.find('#delete-button').show();
 		}, 100);
 		
-		this.$el.find('#name').val(data.name);
 		if (data.public !== 'f') {
 			this.$el.find('#public').prop('checked', true);
 		}
@@ -108,7 +158,7 @@ $.Controller('CreateEditBetSlip', {pluginName: 'CreateEditBetSlipController'}, {
 	},
 
 	loadBets: function(bets) {
-		var $table = $('#bet-table');
+		var $table = $('#bet-table', this.$el);
 		var self   = this;
 		$.each(bets, function(index, bet) {
 			var $row   = $('<tr>');
@@ -159,6 +209,7 @@ $.Controller('CreateEditBetSlip', {pluginName: 'CreateEditBetSlipController'}, {
 
 			$row.find('#remove-bet') .on('click', $.proxy(self.onRemoveBetRowClick, self));
 			$row.find('.outcome-btn').on('click', $.proxy(toggleButtons,            self));
+			$row.on('click', '.add-matchup-button', function() {self.addMatchupToRow($matchupTD);});
 
 			function toggleButtons(evt) {
 				var $button  = $(evt.target);
@@ -178,9 +229,9 @@ $.Controller('CreateEditBetSlip', {pluginName: 'CreateEditBetSlipController'}, {
 	validateBetSlipData: function(data) {
 		var isValid = true;
 		var message = [];
-		if (!data.name)                       {$('#name', this.$el).parent().addClass('has-error');isValid = false;message.push("Please enter a name.");}
+		if (!data.tags || data.tags == '[]')  {isValid = false;message.push("Please enter at least one tag for your bet slip.");}
 		if (!data.bets.length)                {isValid = false;message.push("Please include bets on your bet slip.");}
-		if (!$('#money-to-unit-input').val()) {$('#money-to-unit-input', this.$el).parent().addClass('has-error');isValid = false;message.push("Please enter a dollar amount per unit.");}
+		if (!$('#money-to-unit-input', this.$el).val()) {$('#money-to-unit-input', this.$el).parent().addClass('has-error');isValid = false;message.push("Please enter a dollar amount per unit.");}
 		var missingInfoBets = false;
 		for (var ct = 0; ct < data.bets.length; ct++) {
 			for (var ct2 = 0; ct2 < data.bets[ct].matches.length; ct2++) {
@@ -231,9 +282,9 @@ $.Controller('CreateEditBetSlip', {pluginName: 'CreateEditBetSlipController'}, {
 				window.localStorage.bet_slips = "{}";
 			}
 
-			window.localStorage.reddit_sb_unit_conversion = $('#money-to-unit-input').val();
+			window.localStorage.reddit_sb_unit_conversion = $('#money-to-unit-input', this.$el).val();
 			var currentBetSlips                           = $.parseJSON(window.localStorage.bet_slips);
-			currentBetSlips[result.data]                  = {reddit_sb_unit_conversion: $('#money-to-unit-input').val()};
+			currentBetSlips[result.data]                  = {reddit_sb_unit_conversion: $('#money-to-unit-input', this.$el).val()};
 			window.localStorage.bet_slips                 = JSON.stringify(currentBetSlips);
 
 			$.notify({
@@ -262,6 +313,7 @@ $.Controller('CreateEditBetSlip', {pluginName: 'CreateEditBetSlipController'}, {
 				matchup.match_up_two = $matchup.find('.match-up-two').val();
 				matchup.pick         = $matchup.find('.pick').val();
 				matchup.odds         = $matchup.find('.odds').val();
+				matchup.notes        = $matchup.find('.bet-notes').val();
 				rowData.matches.push(matchup);
 			}
 
@@ -280,9 +332,8 @@ $.Controller('CreateEditBetSlip', {pluginName: 'CreateEditBetSlipController'}, {
 
 	getBetSlipData: function() {
 		var betSlipData    = {};
-		betSlipData.name   = this.$el.find('#name').val();
+		betSlipData.tags   = JSON.stringify(this.currentTags);
 		betSlipData.public = this.$el.find('#public').is(':checked');
-		betSlipData.notes  = this.$el.find('#notes').val();
 		betSlipData.bets   = this.getBets();
 
 		return betSlipData;
@@ -358,23 +409,27 @@ $.Controller('CreateEditBetSlip', {pluginName: 'CreateEditBetSlipController'}, {
 		// Add new line button
 		$mtdContainer.append($('<button>').addClass('add-matchup-button').text('Add').addClass('btn btn-success btn-sm'));
 
+		// Add new line button
+		$mtdContainer.append($('<br><span>').html('<b>Notes:</b>'), $('<textarea>').addClass('bet-notes'));
+
 		if (data) {
 			$sportSelect.val(data.sport_id);
 			$mtdContainer.find('.match-up-one').val(data.match_up_one);
 			$mtdContainer.find('.match-up-two').val(data.match_up_two);
 			$mtdContainer.find('.pick').val(data.pick);
 			$mtdContainer.find('.odds').val(data.odds);
+			$mtdContainer.find('.bet-notes').val(data.notes);
 		}
 	},
 
 	dollarToUnitConverted(dollar) {
-		var dollarPerUnit = $('#money-to-unit-input').val()*1;
+		var dollarPerUnit = $('#money-to-unit-input', this.$el).val()*1;
 		if (!dollarPerUnit) {return dollar;}
 		return dollar/dollarPerUnit;
 	},
 
 	unitToDollarConverted(units) {
-		var dollarPerUnit = $('#money-to-unit-input').val()*1;
+		var dollarPerUnit = $('#money-to-unit-input', this.$el).val()*1;
 		if (!dollarPerUnit) {return units;}
 		return units*dollarPerUnit;
 	}

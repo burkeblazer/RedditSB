@@ -1,6 +1,7 @@
 <?php
 
 require_once("app/User.php");
+require_once("app/Tag.php");
 require_once("app/Sport.php");
 require_once("app/BetSlip.php");
 require_once("app/Dashboard.php");

@@ -4,6 +4,83 @@ class User {
 	public static $current = null;
 
 	/**
+	 * Function: getFollowing
+	 *
+	 * @extern true
+	 */
+	public static function followUser($name) {
+		// Remove any user that's currently being followed under this name
+		User::unfollowUser($name);
+
+		// Check to see if it's a user in our db
+		list($following_user_id) = Heresy::selectOne('user_id', 'user', array('name' => $name), true);
+
+		if ($following_user_id) {
+			Heresy::insertInto('user_following', array('name' => $name, 'user_id' => User::$current['user_id'], 'following_user_id' => $following_user_id));
+		}
+		else {
+			Heresy::insertInto('user_following', array('name' => $name, 'user_id' => User::$current['user_id']));
+		}
+
+		return Utility::successTrue(null, 'Successfully followed user');
+	}
+
+	/**
+	 * Function: unfollowUser
+	 *
+	 * @extern true
+	 */
+	public static function unfollowUser($name) {
+		Utility::pgQueryParams("DELETE FROM user_following WHERE name = $1 AND user_id = $2", array($name, User::$current['user_id']));
+
+		return Utility::successTrue(null, 'Successfully unfollowed user');
+	}
+
+	/**
+	 * Function: getFollowing
+	 *
+	 * @extern true
+	 */
+	public static function getFollowing() {
+		$users_in_system = Utility::pgQueryParams('
+			SELECT
+				u.name,
+			    uf.user_following_id,
+			    u.user_id
+			    
+			FROM
+				"user" u
+			    
+			LEFT JOIN user_following uf ON uf.following_user_id = u.user_id AND uf.user_id = $1
+
+			WHERE
+				u.user_id != $1
+		', array(User::$current['user_id']));
+
+		$users_not_in_system = Heresy::select(array('name', 'user_following_id'), 'user_following', array('user_id' => User::$current['user_id'], 'following_user_id' => null));
+		$return_data         = array_merge($users_in_system, $users_not_in_system);
+
+		foreach ($return_data as &$return_user) {
+			if (!$return_user['user_id']) {
+				$return_user['total_bets']  = '-'; 
+				$return_user['total_units'] = '-';
+				$return_user['percent']     = '-';
+				$return_user['plus_minus']  = '-';
+				continue;
+			}
+
+			$return_user['total_bets']  = BetSlip::getTotalBets($return_user['user_id'],  true);
+			$return_user['total_units'] = BetSlip::getTotalUnits($return_user['user_id'], true);
+			$return_user['percent']     = BetSlip::getPercent($return_user['user_id'],    true);
+			$return_user['plus_minus']  = BetSlip::getPlusMinus($return_user['user_id'],  true);
+
+			unset($return_user['user_id']);
+		}
+
+		return Utility::successTrue($return_data, 'Successfully retrieved following.');
+	}
+
+	/**
 	 * Function: getUsers
 	 *
 	 * @extern true

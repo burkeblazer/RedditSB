@@ -1,5 +1,12 @@
 .Dashboard {
-	padding: 15px;
+	height:  100%;
+	width:   100%;
+}
+
+#dashboard-newsfeed {
+	width:    100%;
+	height:   100%;
+    overflow: auto;
 }
 
 #dashboard-dropdown-text {
@@ -32,4 +39,114 @@
 #dashboard-start-date, #dashboard-end-date {
 	height: 32px  !important;
     width:  100px !important;
+}
+
+.newsfeed-item {
+	background-color: white;
+	border-radius:    5px;
+    border:           1px solid darkgray;
+    width:            50%;
+    margin-left:      25%;
+    box-shadow:       5px 5px 10px #cecece;
+    background-color: #8ABC8A;
+    margin-top:       10px;
+    margin-bottom:    5px;
+    position:         relative;
+}
+
+.newsfeed-item-header {
+	background-color: #555555;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    height: 50px;
+    font-size: 20px;
+    padding-left: 10px;
+    font-family: helvetica;
+    color: white;
+    border-bottom: 3px gray solid;
+    font-weight: lighter;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+}
+
+.newsfeed-tag-item-text {
+	display:          inline-block;
+    padding:          5px;
+    background-color: gray;
+    border-radius:    5px;
+    color:            white;
+    border:           1px solid black;
+    margin-right:     5px;
+}
+
+.newsfeed-item-header-name-container {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.newsfeed-item-header-name {
+    display: inline-block;
+}
+
+.newsfeed-item-header-date {
+    font-size: 10px;
+    margin-top: -6px;
+}
+
+.newsfeed-item-header-title {
+    position: absolute;
+    right: 5px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.newsfeed-item-body-container {
+    margin-top: 50px;
+    padding: 10px;
+}
+
+.newsfeed-item-divider {
+    width: 90%;
+    border: 1px solid lightgray;
+    margin-bottom: 5px;
+    margin-left: 5%;
+}
+
+.newsfeed-item-footer-container {
+    padding: 5px;
+}
+
+.newsfeed-item-footer-like, .newsfeed-item-footer-comment {
+    display: inline-block;
+}
+
+.newsfeed-item-footer-refresh {
+    display: inline-block;
+    position: absolute;
+    right: 5px;
+}
+
+.newsfeed-item-comments-container {
+    padding: 5px;
+    display: none;
+}
+
+.newsfeed-comment-name {
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+}
+
+.newsfeed-comment-date {
+    font-size: 10px;
+    color: white;
+}
+
+.newsfeed-comment {
+    padding: 10px;
+}
+
+.newsfeed-comment-delete {
+    font-size: 11px;
 }

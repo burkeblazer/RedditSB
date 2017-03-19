@@ -152,6 +152,22 @@
 
 				callback(result.data);
 			}
+		},
+
+		getTags: function(callback) {
+			if (Utility.DataSource.tags) {callback(Utility.DataSource.tags);return;}
+			Utility.Ajax.request({
+				mode:     'Tag::getAll',
+				callback: $.proxy(onGetAllTagsSuccess, this)
+			});
+
+			function onGetAllTagsSuccess(result) {
+				if (!result.success) {return;}
+
+				Utility.DataSource.tags = result.data;
+
+				callback(result.data);
+			}
 		}
 	};
 
@@ -229,119 +245,6 @@
 			return '$' + Utility.Number.round(value, 2, true, true);
 		}
 	};
-
-	// Utility.DataTables = {
-	// 	// ***********************
-	// 	// *  SELECTION HELPERS  *
-	// 	// ***********************
-	// 	hasSelection: function(table) {
-	// 		return !!Utility.DataTables.getSelected(table)[0];
-	// 	},
-
-	// 	hasSelections: function(table) {
-	// 		return Utility.DataTables.hasSelection(table);
-	// 	},
-
-	// 	getSelected: function(table) {
-	// 		var selectedData = TableTools.fnGetInstance(table[0]).fnGetSelectedData();
-	// 		return selectedData;
-	// 	},
-
-	// 	removeSelected: function(table) {
-	// 		TableTools.fnGetInstance(table[0]).fnRemoveSelected();
-	// 	},
-
-	// 	selectAll: function(table) {
-	// 		TableTools.fnGetInstance(table[0]).fnSelectAll();
-	// 	},
-
-	// 	clearSelections: function(table) {
-	// 		TableTools.fnGetInstance(table[0]).fnSelectNone();
-	// 	},
-
-	// 	// *************************
-	// 	// *  GETTERS AND SETTERS  *
-	// 	// *************************
-	// 	addData: function(table, data) {
-	// 		table.fnAddData(data);
-	// 		table.fnDraw();
-	// 		table.fnAdjustColumnSizing();
-	// 	},
-
-	// 	setData: function(table, data) {
-	// 		table.fnClearTable();
-	// 		Utility.DataTables.addData(table, data);
-	// 	},
-
-	// 	clearData: function(table) {
-	// 		Utility.DataTables.setData(table, []);
-	// 	},
-
-	// 	getData: function(table, row) {
-	// 		var data = TableTools.fnGetInstance(table[0]).fnGetDataObject();
-
-	// 		if (row === undefined)
-	// 		{
-	// 			return data;
-	// 		}
-	// 		else
-	// 		{
-	// 			return data[row];
-	// 		}
-	// 	},
-
-	// 	removeRow: function(table, row) {
-	// 		return table.fnDeleteRow(row);
-	// 	},
-
-	// 	// **********
-	// 	// *  MISC  *
-	// 	// **********
-	// 	create: function($element, config) {
-	// 		config = $.extend({}, {
-	// 			bDeferRender: true,
-	// 			bJQueryUI:    true,
-	// 			sScrollY:    '290px',
-	// 			sScrollX:    '90%',
-	// 			sDom:        'TrtS',
-	// 			oTableTools: {aButtons: []},
-	// 			aaData:      [],
-	// 			aoColumns:   []
-	// 		}, config);
-
-	// 		var table = $element.dataTable(config);
-
-	// 		// Be nice and fix the columns while we're at it
-	// 		Utility.DataTables.fixColumns(table);
-
-	// 		return table;
-	// 	},
-
-	// 	fixColumns: function(table) {
-	// 		table.fnAdjustColumnSizing();
-	// 		return table;
-	// 	},
-
-	// 	sort: function(table, dataIndex) {
-	// 		// Find the column specified by the dataIndex
-	// 		var aoColumns = table.fnSettings().aoColumns;
-	// 		var columnNum = null;
-
-	// 		for (var i = 0; i < aoColumns.length; i++)
-	// 		{
-	// 			if (aoColumns[i].sDataIndex === dataIndex)
-	// 			{
-	// 				columnNum = i;
-	// 				break;
-	// 			}
-	// 		}
-
-	// 		if (columnNum)
-	// 		{
-	// 			table.fnSort([[columnNum, 'asc']]);
-	// 		}
-	// 	}
-	// };
 
 	Utility.Module = {
 		launch: function(config, callback, target) {
@@ -428,78 +331,39 @@
 		}
 	};
 
-	// Utility.Modal = {
-	// 	alert: function(msg, header, callback, okText) {
-	// 		// Support passing in a selector or plain text to $body
-	// 		if (msg instanceof $)
-	// 		{
-	// 			msg = msg.html();
-	// 		}
+	Utility.confirm = function (message) {
+		var defer = $.Deferred();
+		$('<div/>', {title: 'Please confirm', 'class': 'confirm', 'id': 'dialogconfirm', text: message}).dialog({
+			buttons: {
+				YES: function () {
+					defer.resolve("yes");
+					$(this).attr('yesno', true);
+					$(this).dialog('close');
+				}, 
+				NO: function () {
+					defer.resolve("no");
+					$(this).attr('yesno', false);
+					$(this).dialog('close');
+				}
+			},
+		    open: function(event) {
+		    	$(event.target).parent().center();
+		    },
+			close: function () {
+				if ($(this).attr('yesno') === undefined) {
+					defer.resolve("no");
+				}
+				$(this).remove();
+			},
+			draggable: true,
+			modal:     true,
+			resizable: false,
+			width:     'auto',
+			hide:      {effect: "fade", duration: 300}
+		});
 
-	// 		return bootbox.alert(
-	// 			{
-	// 				message: '<form>'+msg+'</form>',
-	// 				title: header || '',
-	// 				buttons: {
-	// 					ok: {
-	// 						label: okText || 'OK',
-	// 						callback: callback
-	// 					}
-	// 				},
-	// 				callback: callback
-	// 			});
-	// 	},
-
-	// 	prompt: function(msg, callback, defaultValue) {
-	// 		// Support passing in a selector or plain text to $body
-	// 		if (msg instanceof $)
-	// 		{
-	// 			msg = msg.html();
-	// 		}
-
-	// 		return bootbox.prompt(
-	// 			{
-	// 				message: '<form>'+msg+'</form>',
-	// 				value: defaultValue || '',
-	// 				buttons: {
-	// 					confirm: {
-	// 						label: 'OK',
-	// 						callback: callback
-	// 					},
-	// 					cancel: {
-	// 						label: 'Cancel'
-	// 					}
-	// 				},
-	// 				className: "testclass"
-	// 			}
-	// 		);
-	// 	},
-
-	// 	confirm: function(header, msg, callback, confirmText, cancelText) {
-	// 		// Support passing in a selector or plain text to $body
-	// 		if (msg instanceof $)
-	// 		{
-	// 			msg = msg.html();
-	// 		}
-
-	// 		return bootbox.confirm(
-	// 			{
-	// 				message: '<form>'+msg+'</form>',
-	// 				title: header || '',
-	// 				buttons: {
-	// 					confirm: {
-	// 						label: confirmText || 'OK',
-	// 						callback: callback
-	// 					},
-	// 					cancel: {
-	// 						label: cancelText || 'Cancel'
-	// 					}
-	// 				},
-	// 				callback: callback
-	// 			}
-	// 		);
-	// 	}
-	// };
+		return defer.promise();
+	};
 
 }(window.Utility = window.Utility || {}));
 

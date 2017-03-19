@@ -42,3 +42,13 @@
 #create-new-bet-slip {
 	position: initial !important;
 }
+
+.bet-slip-tag-item-text {
+	display: inline-block;
+    padding: 5px;
+    background-color: gray;
+    border-radius: 5px;
+    color: white;
+    border: 1px solid black;
+    margin-right: 5px;
+}

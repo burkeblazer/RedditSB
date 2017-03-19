@@ -11,35 +11,60 @@ $.Controller('Following', {pluginName: 'FollowingController'}, {
 	},
 
 	initEvents: function() {
-		this.$el.on('click', 'tr', $.proxy(this.onUserClick, this));
+		this.$el.on('click', '.following-star',     $.proxy(this.unfollowUser,  this));
+		this.$el.on('click', '.not-following-star', $.proxy(this.followUser,    this));
+		this.$el.on('click', '#add-reddit-user',    $.proxy(this.addRedditUser, this));
 	},
 
-	onUserClick: function() {
-		var $dialog = $($('#view-user-details-html').html()).dialog();
-		var self    = this;
+	addRedditUser: function() {
+		var followName = $('#add-reddit-user-text', this.$el).val();
+		if (!followName) {return;}
 
-		// Make sure it destroys instances on close
-		$dialog.on('dialogclose', function(event) {
-			$dialog.dialog('destroy');
-			self.loadTable();
+		Utility.Ajax.request({
+			mode:     'User::followUser',
+			name:     followName,
+			callback: $.proxy(onFollowUserSuccess, this)
 		});
 
-		var windowHeight = $(window).height();
-		var windowWidth  = $(window).width();
-		var dialogWidth  = 1200;
-		var dialogHeight = 800;
+		function onFollowUserSuccess(result) {
+			if (!result.success) {return;}
 
-		// Center dialog
-		$dialog.parent('.ui-dialog').css('height', dialogHeight);
-		$dialog.parent('.ui-dialog').css('width',  dialogWidth);
-		$dialog.parent('.ui-dialog').css('top',    (windowHeight/2) - (dialogHeight/2));
-		$dialog.parent('.ui-dialog').css('left',   (windowWidth/2)  - (dialogWidth/2) );
-		$dialog.css('height', 'calc(100% - 33px)');
+			this.loadTable();
+		}
+	},
 
-		// Init the controller to the div
-		Utility.Module.launch('UserDetails', $.noop, $dialog);
+	unfollowUser: function(evt) {
+		var $target      = $(evt.target);
+		var unfollowName = $($(evt.target).closest('tr').find('td')[0]).text();
 
-		$dialog.on('click', '#cancel-button', function() {$dialog.dialog('destroy');});
+		Utility.Ajax.request({
+			mode:     'User::unfollowUser',
+			name:     unfollowName,
+			callback: $.proxy(onUnfollowUserSuccess, this)
+		});
+
+		function onUnfollowUserSuccess(result) {
+			if (!result.success) {return;}
+
+			this.loadTable();
+		}
+	},
+
+	followUser: function(evt) {
+		var $target    = $(evt.target);
+		var followName = $($(evt.target).closest('tr').find('td')[0]).text();
+
+		Utility.Ajax.request({
+			mode:     'User::followUser',
+			name:     followName,
+			callback: $.proxy(onFollowUserSuccess, this)
+		});
+
+		function onFollowUserSuccess(result) {
+			if (!result.success) {return;}
+
+			this.loadTable();
+		}
 	},
 
 	loadTable: function() {
@@ -49,7 +74,7 @@ $.Controller('Following', {pluginName: 'FollowingController'}, {
 		}
 		
 		Utility.Ajax.request({
-			mode:     'User::getUsers',
+			mode:     'User::getFollowing',
 			callback: $.proxy(onGetUsersSuccess, this)
 		});
 
@@ -70,6 +95,7 @@ $.Controller('Following', {pluginName: 'FollowingController'}, {
 			$row.append($('<td>').append(user.total_units));
 			$row.append($('<td>').append(user.percent));
 			$row.append($('<td>').append(user.plus_minus));
+			$row.append($('<td>').append($('<div>').addClass((user.user_following_id) ? 'following-star' : 'not-following-star')));
 
 			$table.append($row);
 		});
